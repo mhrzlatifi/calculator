@@ -1,62 +1,65 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 )
 
-func calc(num1, num2 int, operator string) (res float32) {
-
-	switch operator {
-	case "/":
-		res = float32(num1) / float32(num2)
-	case "*":
-		res = float32(num1) * float32(num2)
-	case "-":
-		res = float32(num1) - float32(num2)
-	case "+":
-		res = float32(num1) + float32(num2)
-	case "%":
-		res = float32(num1 % num2)
-	}
-	return
+type Calc struct {
+	Num1, Num2 int
 }
 
-func parseInputs(num1, num2 int, operator string) (res float32, err error) {
+func (c *Calc) Add() float32 {
+	return float32(c.Num1 + c.Num2)
+}
 
-	operators := map[string]string{
-		"/": "devide",
-		"*": "multiply",
-		"-": "Subtract",
-		"+": "add",
-		"%": "remainder",
-	}
+func (c *Calc) Sub() float32 {
+	return float32(c.Num1 - c.Num2)
+}
 
-	_, ok := operators[operator]
-	if !ok {
-		res, err = 0, errors.New("Wrong operator")
-		return
-	}
+func (c *Calc) Dev() float32 {
+	return float32(c.Num1 / c.Num2)
+}
 
-	res, err = calc(num1, num2, operator), nil
-	return
+func (c *Calc) Multiply() float32 {
+	return float32(c.Num1 * c.Num2)
+}
+
+func (c *Calc) Rem() float32 {
+	return float32(c.Num1 % c.Num2)
 }
 
 func main() {
+	var op string
 
-	var a, b int
-	var c string
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("wrong operator!!! plz enter operator again")
+		}
+	}()
+
+	c := Calc{}
+
 	fmt.Print("Enter the first number: ")
-	fmt.Scanf("%d", &a)
+	fmt.Scanf("%d", &c.Num1)
 	fmt.Print("Enter the second number: ")
-	fmt.Scanf("%d", &b)
+	fmt.Scanf("%d", &c.Num2)
 	fmt.Print("Enter the operator: ")
-	fmt.Scanf("%s", &c)
+	fmt.Scanf("%s", &op)
 
-	res, err := parseInputs(a, b, c)
-	if err != nil {
-		fmt.Println(err.Error())
-	} else {
-		fmt.Println(res)
+	operators := map[string]func() float32{
+		"/": c.Dev,
+		"*": c.Multiply,
+		"-": c.Sub,
+		"+": c.Add,
+		"%": c.Rem,
 	}
+
+	res, ok := operators[op]
+	if !ok {
+		fmt.Println("wrong operator!!!")
+		return
+	}
+
+	fmt.Println(res())
+
 }
