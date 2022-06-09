@@ -31,12 +31,6 @@ func (c *Calc) Rem() float32 {
 func main() {
 	var op string
 
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println("wrong operator!!! plz enter operator again")
-		}
-	}()
-
 	c := Calc{}
 
 	fmt.Print("Enter the first number: ")
