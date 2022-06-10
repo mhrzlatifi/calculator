@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"log"
 )
 
 type Calc struct {
@@ -29,34 +31,13 @@ func (c Calc) Rem() float32 {
 	return float32(c.Num1 % c.Num2)
 }
 
-func calc() {
+func calc(num1, num2 int, op string) (float32, error) {
 
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(err)
-			calc()
-		}
-	}()
-
-	c := Calc{}
-
-	fmt.Print("Enter the first number: ")
-	_, err := fmt.Scanf("%d", &c.Num1)
-	if err != nil {
-		panic(err)
+	if op == "/" && num2 == 0 {
+		return 0, errors.New("devision by zero ")
 	}
 
-	fmt.Print("Enter the second number: ")
-	_, err = fmt.Scanf("%d", &c.Num2)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Print("Enter the operator: ")
-	_, err = fmt.Scanf("%s", &c.op)
-	if err != nil {
-		panic(err)
-	}
+	c := Calc{num1, num2, op}
 
 	operators := map[string]func() float32{
 		"/": c.Dev,
@@ -66,10 +47,45 @@ func calc() {
 		"%": c.Rem,
 	}
 
-	res := operators[c.op]()
-	fmt.Println(res)
+	res, ok := operators[c.op]
+	if !ok {
+		return 0, errors.New("operator is not supported")
+	}
+
+	return res(), nil
 }
 
 func main() {
-	calc()
+
+	var num1, num2 int
+	var op string
+
+	fmt.Print("Enter the first number: ")
+	_, err := fmt.Scanf("%d", &num1)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	fmt.Print("Enter the second number: ")
+	_, err = fmt.Scanf("%d", &num2)
+	if err != nil {
+		log.Println("second number should be of type int")
+		return
+	}
+
+	fmt.Print("Enter the operator: ")
+	_, err = fmt.Scanf("%s", &op)
+	if err != nil {
+		log.Println("operator should be of type string")
+		return
+	}
+
+	res, err := calc(num1, num2, op)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
+
+	fmt.Println(res)
 }
