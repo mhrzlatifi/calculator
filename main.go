@@ -34,7 +34,7 @@ func (c Calc) Rem() float32 {
 func calc(num1, num2 int, op string) (float32, error) {
 
 	if op == "/" && num2 == 0 {
-		return 0, errors.New("devision by zero ")
+		return 0, errors.New("division by zero")
 	}
 
 	c := Calc{num1, num2, op}
