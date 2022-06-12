@@ -25,6 +25,7 @@ func TestCalc(t *testing.T) {
 		{10, 2, "%", 0.0, ""},
 		{10, 3, "%", 1, ""},
 		{-25, 5, "%", 0, ""},
+		{-25, 5, "^", 0, "operator is not supported"},
 	}
 
 	for i := range tests {
